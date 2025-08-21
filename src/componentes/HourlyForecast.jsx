@@ -1,23 +1,35 @@
-export default function HourlyForecast({ forecastData }) {
-    if (!forecastData || !forecastData.list) return null;
-    return (
-      <section>
-        <h2>Próximas 24h</h2>
-        <div style={{ display: "flex", gap: "10px", overflowX: "auto" }}>
-          {forecastData.list.slice(0, 8).map((item) => (
-            <div key={item.dt} style={{ minWidth: "80px" }}>
-              <p>
-                {new Date(item.dt * 1000).getHours()}:00
-              </p>
-              <img
-                src={`https://openweathermap.org/img/wn/${item.weather[0].icon}@2x.png`}
-                alt={item.weather[0].description}
-                width={50}
-              />
-              <p>{item.main.temp}°</p>
-            </div>
-          ))}
+export default function HourlyForecast({ forecast }) {
+  return (
+    <div className="hourly-forecast-box">
+      <style>
+        {`
+        .hourly-forecast-box {
+          display: flex;
+          gap: 12px;
+          overflow-x: auto;
+          background: rgba(30,32,56,0.97);
+          border-radius: 18px;
+          padding: 14px 18px;
+          color: #fff;
+        }
+        .hour-box {
+          background: #23254e;
+          border-radius: 10px;
+          padding: 10px 8px;
+          min-width: 80px;
+          text-align: center;
+          color: #e4e6fa;
+          font-size: 1.1rem;
+        }
+        `}
+      </style>
+      {forecast.map((h, i) => (
+        <div key={i} className="hour-box">
+          <div>{h.hour}</div>
+          <div>{h.temp}°</div>
+          <div>{h.status}</div>
         </div>
-      </section>
-    );
-  }
+      ))}
+    </div>
+  );
+}

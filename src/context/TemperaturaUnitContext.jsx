@@ -1,2 +1,2 @@
 import { createContext } from "react";
-export const TemperatureUnitContext = createContext();
+export const TemperaturaUnitContext = createContext();

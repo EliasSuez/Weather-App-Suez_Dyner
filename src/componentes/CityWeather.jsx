@@ -1,59 +1,64 @@
-import { useEffect, useState } from "react";
-import { useCurrentWeather } from "../hooks/useWeatherApi";
-
-const CITIES = ["New York", "Copenhagen", "Ho Chi Minh"];
-
-export default function CityWeather({ unit }) {
-  // Creamos un estado para cada ciudad
-  const [cityWeather, setCityWeather] = useState(Array(CITIES.length).fill(null));
-
-  useEffect(() => {
-    // Para cada ciudad, llamamos el hook y actualizamos el estado
-    CITIES.forEach((city, idx) => {
-      // Usamos el hook fuera del render
-      // ¡Pero aquí no podemos usar hooks! Así que usamos fetch manual
-      fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=${unit}&appid=${import.meta.env.VITE_OPENWEATHER_API_KEY}`
-      )
-        .then((res) => res.json())
-        .then((data) => {
-          setCityWeather((prev) => {
-            const updated = [...prev];
-            updated[idx] = data;
-            return updated;
-          });
-        })
-        .catch(() => {
-          setCityWeather((prev) => {
-            const updated = [...prev];
-            updated[idx] = null;
-            return updated;
-          });
-        });
-    });
-  }, [unit]);
-
+export default function CityWeather({ cities }) {
   return (
-    <section>
-      <h2>Clima en ciudades grandes</h2>
-      <div style={{ display: "flex", gap: "20px" }}>
-        {CITIES.map((city, idx) => {
-          const data = cityWeather[idx];
-          if (!data || data.cod === "404") return <div key={city}>{city}: no data</div>;
-          return (
-            <div key={city}>
-              <h3>{city}</h3>
-              <img
-                src={`https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png`}
-                alt={data.weather[0].description}
-                width={40}
-              />
-              <p>{data.main.temp}°</p>
-              <p>{data.weather[0].description}</p>
-            </div>
-          );
-        })}
+    <div className="city-weather-box">
+      <style>
+        {`
+        .city-weather-box {
+          margin-top: 10px;
+          background: rgba(30,32,56,0.97);
+          border-radius: 18px;
+          padding: 18px 26px;
+          margin-bottom: 12px;
+          color: #fff;
+        }
+        .city-title {
+          font-weight: 700;
+          color: #fff;
+          font-size: 1.2rem;
+          margin-bottom: 8px;
+        }
+        .city-list {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+        .city-box {
+          background: #23254e;
+          border-radius: 12px;
+          padding: 10px 18px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          font-size: 1.05rem;
+          color: #e4e6fa;
+        }
+        .city-name {
+          font-weight: 600;
+          color: #fff;
+        }
+        .city-country {
+          color: #b4b4e6;
+        }
+        .city-temp {
+          font-size: 1.25rem;
+          font-weight: bold;
+          color: #f6d365;
+        }
+        `}
+      </style>
+      <div className="city-title">Other large cities</div>
+      <div className="city-list">
+        {cities.map((c, i) => (
+          <div key={i} className="city-box">
+            <span>
+              <span className="city-name">{c.city}</span>
+              <span className="city-country"> {c.country}</span>
+            </span>
+            <span>{c.status}</span>
+            <span className="city-temp">{c.temp}°</span>
+          </div>
+        ))}
       </div>
-    </section>
+    </div>
   );
 }
