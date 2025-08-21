@@ -2,7 +2,7 @@ import CurrentWeather from "./CurrentWeather";
 import HourlyForecast from "./HourlyForecast";
 import DailyForecast from "./DailyForecast";
 import CityWeather from "./CityWeather";
-import Header from "./Header"; // <-- Agregado
+import Header from "./Header"; 
 
 export default function WheaterApp() {
   const mockCurrentWeather = {
