@@ -127,7 +127,7 @@ export default function WheaterApp() {
         }
         `}
       </style>
-      <Header /> {/* <-- Usando el header global */}
+      <Header /> 
       <main>
         <section>
           <CurrentWeather weather={mockCurrentWeather} />
