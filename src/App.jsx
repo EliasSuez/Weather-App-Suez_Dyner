@@ -22,14 +22,16 @@ export default function App() {
 
   return (
     <div style={appStyles}>
+      <style>
+        {`
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+        body, .weather-app-container, * {
+          font-family: 'Montserrat', Arial, sans-serif !important;
+        }
+        `}
+      </style>
       <BrowserRouter>
-        <nav style={{
-          marginBottom: "1.5rem",
-          padding: "16px",
-          display: "flex",
-          alignItems: "center",
-          gap: "12px"
-        }}>
+        <nav >
           <Link to="/" style={{ marginRight: "10px" }}>Inicio</Link>
           <Link to="/current">Clima actual</Link>
           <Link to="/hourly" style={{ marginLeft: "10px" }}>Por hora</Link>

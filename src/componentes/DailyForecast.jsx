@@ -3,6 +3,13 @@ export default function DailyForecast({ forecast }) {
     <div className="daily-forecast-box">
       <style>
         {`
+        body {
+          background: linear-gradient(135deg, #23254e 0%, #2d2347 100%);
+          color: #fff;
+          margin: 0;
+          min-height: 100vh;
+        }
+        
         .daily-forecast-box {
           display: flex;
           flex-direction: column;

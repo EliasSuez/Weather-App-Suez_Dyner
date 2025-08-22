@@ -3,6 +3,13 @@ export default function CurrentWeather({ weather }) {
     <div className="current-weather-box">
       <style>
         {`
+        body {
+          background: linear-gradient(135deg, #23254e 0%, #2d2347 100%);
+          color: #fff;
+          margin: 0;
+          min-height: 100vh;
+        }
+
         .current-weather-box {
           background: rgba(30,32,56,0.97);
           border-radius: 18px;

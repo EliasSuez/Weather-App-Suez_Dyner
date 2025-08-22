@@ -3,7 +3,7 @@ import { useWeatherApp } from "../hooks/useWeatherApp";
 export default function Header() {
   const context = useWeatherApp();
   if (!context) return <div>Error: WeatherAppProvider missing</div>;
-  const { theme, toggleTheme, unit, toggleUnit } = context;
+  const { unit, toggleUnit } = context;
 
   return (
     <header>
@@ -22,9 +22,6 @@ export default function Header() {
           °F
         </button>
       </div>
-      <button onClick={toggleTheme} style={{ marginLeft: "16px" }}>
-        {theme === "dark" ? "🌙 Oscuro" : "☀️ Claro"}
-      </button>
     </header>
   );
 }

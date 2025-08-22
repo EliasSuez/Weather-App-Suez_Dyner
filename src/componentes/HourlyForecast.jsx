@@ -3,6 +3,13 @@ export default function HourlyForecast({ forecast }) {
     <div className="hourly-forecast-box">
       <style>
         {`
+          body {
+            background: linear-gradient(135deg, #23254e 0%, #2d2347 100%);
+            color: #fff;
+            margin: 0;
+            min-height: 100vh;
+          }
+          
         .hourly-forecast-box {
           display: flex;
           gap: 12px;
