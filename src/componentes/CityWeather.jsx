@@ -1,20 +1,11 @@
 import { celsiusToFahrenheit } from "../util/temperature";
-import { useWeatherApp } from "../hooks/useWeatherApp";
 
-export default function CityWeather({ cities }) {
-  const { unit } = useWeatherApp();
-
+export default function CityWeather({ cities, unit }) {
+  const simbolo = unit === "C" ? "°C" : "°F";
   return (
     <div className="city-weather-box">
       <style>
         {`
-        body {
-          background: linear-gradient(135deg, #23254e 0%, #2d2347 100%);
-          color: #fff;
-          margin: 0;
-          min-height: 100vh;
-        }
-
         .city-weather-box {
           margin-top: 10px;
           background: rgba(30,32,56,0.97);
@@ -61,7 +52,7 @@ export default function CityWeather({ cities }) {
       <div className="city-title">Other large cities</div>
       <div className="city-list">
         {cities.map((c, i) => {
-          const temp = unit === "C" ? c.temp : celsiusToFahrenheit(c.temp);
+          const temp = unit === "C" ? Math.round(c.temp) : Math.round(celsiusToFahrenheit(c.temp));
           return (
             <div key={i} className="city-box">
               <span>
@@ -69,7 +60,7 @@ export default function CityWeather({ cities }) {
                 <span className="city-country"> {c.country}</span>
               </span>
               <span>{c.status}</span>
-              <span className="city-temp">{temp}°{unit}</span>
+              <span className="city-temp">{temp}{simbolo}</span>
             </div>
           );
         })}

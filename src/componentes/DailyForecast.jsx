@@ -1,20 +1,11 @@
 import { celsiusToFahrenheit } from "../util/temperature";
-import { useWeatherApp } from "../hooks/useWeatherApp";
 
-export default function DailyForecast({ forecast }) {
-  const { unit } = useWeatherApp();
-
+export default function DailyForecast({ forecast, unit }) {
+  const simbolo = unit === "C" ? "°C" : "°F";
   return (
     <div className="daily-forecast-box">
       <style>
         {`
-        body {
-          background: linear-gradient(135deg, #23254e 0%, #2d2347 100%);
-          color: #fff;
-          margin: 0;
-          min-height: 100vh;
-        }
-        
         .daily-forecast-box {
           display: flex;
           flex-direction: column;
@@ -38,12 +29,12 @@ export default function DailyForecast({ forecast }) {
         `}
       </style>
       {forecast.map((d, i) => {
-        const tempMin = unit === "C" ? d.temp_min : celsiusToFahrenheit(d.temp_min);
-        const tempMax = unit === "C" ? d.temp_max : celsiusToFahrenheit(d.temp_max);
+        const tempMin = unit === "C" ? Math.round(d.temp_min) : Math.round(celsiusToFahrenheit(d.temp_min));
+        const tempMax = unit === "C" ? Math.round(d.temp_max) : Math.round(celsiusToFahrenheit(d.temp_max));
         return (
           <div key={i} className="day-box">
             <span>{d.day}</span>
-            <span>{tempMin}° / {tempMax}°{unit}</span>
+            <span>{tempMin}{simbolo} / {tempMax}{simbolo}</span>
             <span>{d.status}</span>
           </div>
         );
