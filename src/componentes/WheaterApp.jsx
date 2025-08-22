@@ -1,145 +1,117 @@
+import { useState } from "react";
 import CurrentWeather from "./CurrentWeather";
 import HourlyForecast from "./HourlyForecast";
 import DailyForecast from "./DailyForecast";
 import CityWeather from "./CityWeather";
-import Header from "./Header"; 
+import Header from "./Header";
+import { useWeatherApi } from "../hooks/useWeatherApi";
+import { useMultipleCitiesWeather } from "../hooks/useMultipleCitiesWeather";
 
-export default function WheaterApp() {
-  const mockCurrentWeather = {
-    city: "Helsinki",
-    country: "Finland",
-    temp: -1,
-    feels_like: -4,
-    status: "Snow",
-    wind: 5.14,
-    time: "11:45 AM",
-    temp_min: -1,
-    temp_max: 3,
-    icon: "13d",
-  };
+const DEFAULT_CITY = "Helsinki";
+const OTHER_CITIES = ["New York", "Copenhagen", "Ho Chi Minh City"];
 
-  const mockHourly = [
-    { hour: "9:00 AM", temp: -1, status: "Snow", icon: "13d" },
-    { hour: "12:00 AM", temp: 0, status: "Drizzle", icon: "09d" },
-    { hour: "3:00 PM", temp: 1, status: "Clouds", icon: "03d" },
-    { hour: "6:00 PM", temp: 3, status: "Clear", icon: "01d" },
-    { hour: "9:00 PM", temp: 2, status: "Mist", icon: "50d" },
-    { hour: "12:00 PM", temp: 0, status: "Thunderstorm", icon: "11d" },
-    { hour: "3:00 AM", temp: 1, status: "Rain", icon: "10d" },
-    { hour: "6:00 AM", temp: 1, status: "Clouds", icon: "03d" },
-  ];
+// Recibe unit y setUnit por props (NO uses useState para unit aquí)
+export default function WheaterApp({ unit, setUnit }) {
+  const [city, setCity] = useState(DEFAULT_CITY);
 
-  const mockDaily = [
-    { day: "Today", temp_min: -1, temp_max: 3, status: "Clouds", icon: "03d" },
-    { day: "Fri", temp_min: -2, temp_max: 2, status: "Snow", icon: "13d" },
-    { day: "Sat", temp_min: -3, temp_max: 1, status: "Clear", icon: "01d" },
-    { day: "Sun", temp_min: 4, temp_max: 7, status: "Clouds", icon: "03d" },
-    { day: "Mon", temp_min: 1, temp_max: 7, status: "Thunderstorm", icon: "11d" },
-  ];
+  // Usar el hook con lenguaje español
+  const {
+    data: currentData,
+    loading: loadingCurrent,
+    error: errorCurrent,
+  } = useWeatherApi(city, "weather", "es");
 
-  const mockCities = [
-    { city: "New York", country: "US", temp: 14, status: "Clear sky", icon: "01d" },
-    { city: "Copenhagen", country: "Denmark", temp: 0, status: "Snow", icon: "13d" },
-    { city: "Ho Chi Minh City", country: "Vietnam", temp: 28, status: "Thunderstorm", icon: "11d" },
-  ];
+  const {
+    data: forecastData,
+    loading: loadingForecast,
+    error: errorForecast,
+  } = useWeatherApi(city, "forecast", "es");
+
+  const otherCitiesData = useMultipleCitiesWeather(OTHER_CITIES);
+
+  // Procesar datos para CurrentWeather
+  let currentWeather = null;
+  if (currentData && currentData.main && String(currentData.cod) === "200") {
+    currentWeather = {
+      city: currentData.name,
+      country: currentData.sys?.country,
+      temp: currentData.main.temp,
+      feels_like: currentData.main.feels_like,
+      status: currentData.weather[0].main,
+      wind: currentData.wind.speed,
+      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      temp_min: currentData.main.temp_min,
+      temp_max: currentData.main.temp_max,
+      icon: currentData.weather[0].icon,
+      description: currentData.weather[0].description,
+    };
+  }
+
+  // Procesar datos para HourlyForecast (primeras 8 entradas = 24h)
+  const hourlyForecast = forecastData && forecastData.list
+    ? forecastData.list.slice(0, 8).map(item => ({
+        hour: new Date(item.dt * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        temp: item.main.temp,
+        status: item.weather[0].main,
+        icon: item.weather[0].icon,
+        description: item.weather[0].description,
+      }))
+    : [];
+
+  // Procesar datos para DailyForecast (agrupando por día)
+  const dailyMap = {};
+  if (forecastData && forecastData.list) {
+    forecastData.list.forEach(item => {
+      const date = new Date(item.dt * 1000);
+      const day = date.toLocaleDateString([], { weekday: "short" });
+      if (!dailyMap[day]) {
+        dailyMap[day] = {
+          day,
+          temp_min: item.main.temp_min,
+          temp_max: item.main.temp_max,
+          status: item.weather[0].main,
+          icon: item.weather[0].icon,
+          description: item.weather[0].description,
+        };
+      } else {
+        dailyMap[day].temp_min = Math.min(dailyMap[day].temp_min, item.main.temp_min);
+        dailyMap[day].temp_max = Math.max(dailyMap[day].temp_max, item.main.temp_max);
+      }
+    });
+  }
+  const dailyForecast = Object.values(dailyMap).slice(0, 5);
+
+  // Procesar datos para CityWeather
+  const cityWeatherList = otherCitiesData
+    .filter(data => data && data.main)
+    .map(data => ({
+      city: data.name,
+      country: data.sys.country,
+      temp: data.main.temp,
+      status: data.weather[0].main,
+      icon: data.weather[0].icon,
+      description: data.weather[0].description,
+    }));
 
   return (
     <div className="weather-app-container">
-      <style>
-        {`
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
-        body, .weather-app-container, * {
-          font-family: 'Montserrat', Arial, sans-serif !important;
-        }
-        body {
-          background: linear-gradient(135deg, #23254e 0%, #2d2347 100%);
-          color: #fff;
-          margin: 0;
-          min-height: 100vh;
-        }
-        .weather-app-container {
-          max-width: 1400px;
-          margin: 40px auto;
-          background: rgba(24, 26, 52, 0.95);
-          border-radius: 25px;
-          box-shadow: 0 8px 32px 0 rgba(31, 38, 135, .37);
-          padding: 32px;
-          display: flex;
-          flex-direction: column;
-          gap: 24px;
-        }
-        header {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          margin-bottom: 18px;
-        }
-        .search-bar {
-          background: #191c36;
-          color: #fff;
-          border: none;
-          border-radius: 14px;
-          padding: 12px 18px;
-          font-size: 1.05rem;
-          width: 250px;
-          margin-right: 16px;
-        }
-        .search-bar::placeholder {
-          color: #b4b4e6;
-        }
-        .unit-toggle {
-          display: flex;
-          gap: 7px;
-        }
-        .unit-btn {
-          background: #191c36;
-          color: #fff;
-          border: none;
-          border-radius: 50%;
-          width: 38px;
-          height: 38px;
-          font-size: 1.1rem;
-          cursor: pointer;
-          transition: background .2s;
-          outline: none;
-        }
-        .unit-btn.active {
-          background: #8551e6;
-          color: #fff;
-        }
-        main {
-          display: grid;
-          grid-template-columns: 2fr 1fr;
-          gap: 28px;
-        }
-        section, aside {
-          margin-bottom: 12px;
-        }
-        @media (max-width: 900px) {
-          .weather-app-container {
-            max-width: 98vw;
-            padding: 12px;
-          }
-          main {
-            grid-template-columns: 1fr;
-            gap: 10px;
-          }
-        }
-        `}
-      </style>
-      <Header /> 
+      <Header setCity={setCity} unit={unit} setUnit={setUnit} />
       <main>
         <section>
-          <CurrentWeather weather={mockCurrentWeather} />
+          {loadingCurrent && <div>Loading...</div>}
+          {errorCurrent && <div style={{color: "orange"}}>{errorCurrent}</div>}
+          {currentWeather && <CurrentWeather weather={currentWeather} unit={unit} />}
         </section>
         <section>
-          <HourlyForecast forecast={mockHourly} />
+          {loadingForecast && <div>Loading...</div>}
+          {errorForecast && <div style={{color: "orange"}}>{errorForecast}</div>}
+          <HourlyForecast forecast={hourlyForecast} unit={unit} />
         </section>
         <section>
-          <DailyForecast forecast={mockDaily} />
+          <DailyForecast forecast={dailyForecast} unit={unit} />
         </section>
         <aside>
-          <CityWeather cities={mockCities} />
+          <CityWeather cities={cityWeatherList} unit={unit} />
         </aside>
       </main>
     </div>

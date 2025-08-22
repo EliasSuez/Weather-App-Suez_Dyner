@@ -1,13 +1,14 @@
 import { celsiusToFahrenheit } from "../util/temperature";
-import { useWeatherApp } from "../hooks/useWeatherApp";
 
-export default function CurrentWeather({ weather }) {
-  const { unit } = useWeatherApp();
+export default function CurrentWeather({ weather, unit }) {
+  // Si el unit es "C", muestra el valor en Celsius, si es "F", lo convierte.
+  const temp = unit === "C" ? Math.round(weather.temp) : celsiusToFahrenheit(weather.temp);
+  const tempMin = unit === "C" ? Math.round(weather.temp_min) : celsiusToFahrenheit(weather.temp_min);
+  const tempMax = unit === "C" ? Math.round(weather.temp_max) : celsiusToFahrenheit(weather.temp_max);
+  const feelsLike = unit === "C" ? Math.round(weather.feels_like) : celsiusToFahrenheit(weather.feels_like);
 
-  const temp = unit === "C" ? weather.temp : celsiusToFahrenheit(weather.temp);
-  const tempMin = unit === "C" ? weather.temp_min : celsiusToFahrenheit(weather.temp_min);
-  const tempMax = unit === "C" ? weather.temp_max : celsiusToFahrenheit(weather.temp_max);
-  const feelsLike = unit === "C" ? weather.feels_like : celsiusToFahrenheit(weather.feels_like);
+  // El símbolo de unidad para mostrar siempre °C o °F
+  const unidadSimbolo = unit === "C" ? "°C" : "°F";
 
   return (
     <div className="current-weather-box">
@@ -58,7 +59,7 @@ export default function CurrentWeather({ weather }) {
         `}
       </style>
       <div className="current-weather-main">
-        <span className="current-temp">{temp}°{unit}</span>
+        <span className="current-temp">{temp}{unidadSimbolo}</span>
         <span>
           <div className="current-city">{weather.city}</div>
           <div className="current-time">{weather.time}</div>
@@ -67,8 +68,8 @@ export default function CurrentWeather({ weather }) {
       <div className="current-details">
         <span>{weather.status}</span>
         <span>{weather.wind} m/s</span>
-        <span>Feel like: {feelsLike}°{unit}</span>
-        <span>Min/Max: {tempMin}° / {tempMax}°{unit}</span>
+        <span>Sensación térmica: {feelsLike}{unidadSimbolo}</span>
+        <span>Min/Max: {tempMin}{unidadSimbolo} / {tempMax}{unidadSimbolo}</span>
       </div>
     </div>
   );
