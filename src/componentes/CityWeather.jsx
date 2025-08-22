@@ -1,4 +1,9 @@
+import { celsiusToFahrenheit } from "../util/temperature";
+import { useWeatherApp } from "../hooks/useWeatherApp";
+
 export default function CityWeather({ cities }) {
+  const { unit } = useWeatherApp();
+
   return (
     <div className="city-weather-box">
       <style>
@@ -55,16 +60,19 @@ export default function CityWeather({ cities }) {
       </style>
       <div className="city-title">Other large cities</div>
       <div className="city-list">
-        {cities.map((c, i) => (
-          <div key={i} className="city-box">
-            <span>
-              <span className="city-name">{c.city}</span>
-              <span className="city-country"> {c.country}</span>
-            </span>
-            <span>{c.status}</span>
-            <span className="city-temp">{c.temp}°</span>
-          </div>
-        ))}
+        {cities.map((c, i) => {
+          const temp = unit === "C" ? c.temp : celsiusToFahrenheit(c.temp);
+          return (
+            <div key={i} className="city-box">
+              <span>
+                <span className="city-name">{c.city}</span>
+                <span className="city-country"> {c.country}</span>
+              </span>
+              <span>{c.status}</span>
+              <span className="city-temp">{temp}°{unit}</span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

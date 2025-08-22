@@ -1,4 +1,14 @@
+import { celsiusToFahrenheit } from "../util/temperature";
+import { useWeatherApp } from "../hooks/useWeatherApp";
+
 export default function CurrentWeather({ weather }) {
+  const { unit } = useWeatherApp();
+
+  const temp = unit === "C" ? weather.temp : celsiusToFahrenheit(weather.temp);
+  const tempMin = unit === "C" ? weather.temp_min : celsiusToFahrenheit(weather.temp_min);
+  const tempMax = unit === "C" ? weather.temp_max : celsiusToFahrenheit(weather.temp_max);
+  const feelsLike = unit === "C" ? weather.feels_like : celsiusToFahrenheit(weather.feels_like);
+
   return (
     <div className="current-weather-box">
       <style>
@@ -48,7 +58,7 @@ export default function CurrentWeather({ weather }) {
         `}
       </style>
       <div className="current-weather-main">
-        <span className="current-temp">{weather.temp}°</span>
+        <span className="current-temp">{temp}°{unit}</span>
         <span>
           <div className="current-city">{weather.city}</div>
           <div className="current-time">{weather.time}</div>
@@ -57,8 +67,8 @@ export default function CurrentWeather({ weather }) {
       <div className="current-details">
         <span>{weather.status}</span>
         <span>{weather.wind} m/s</span>
-        <span>Feel like: {weather.feels_like}°C</span>
-        <span>Min/Max: {weather.temp_min}° / {weather.temp_max}°</span>
+        <span>Feel like: {feelsLike}°{unit}</span>
+        <span>Min/Max: {tempMin}° / {tempMax}°{unit}</span>
       </div>
     </div>
   );

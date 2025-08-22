@@ -1,4 +1,9 @@
+import { celsiusToFahrenheit } from "../util/temperature";
+import { useWeatherApp } from "../hooks/useWeatherApp";
+
 export default function HourlyForecast({ forecast }) {
+  const { unit } = useWeatherApp();
+
   return (
     <div className="hourly-forecast-box">
       <style>
@@ -30,13 +35,16 @@ export default function HourlyForecast({ forecast }) {
         }
         `}
       </style>
-      {forecast.map((h, i) => (
-        <div key={i} className="hour-box">
-          <div>{h.hour}</div>
-          <div>{h.temp}°</div>
-          <div>{h.status}</div>
-        </div>
-      ))}
+      {forecast.map((h, i) => {
+        const temp = unit === "C" ? h.temp : celsiusToFahrenheit(h.temp);
+        return (
+          <div key={i} className="hour-box">
+            <div>{h.hour}</div>
+            <div>{temp}°{unit}</div>
+            <div>{h.status}</div>
+          </div>
+        );
+      })}
     </div>
   );
 }
