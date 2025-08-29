@@ -6,6 +6,7 @@ import CityWeather from "./CityWeather";
 import Header from "./Header";
 import { useWeatherApi } from "../hooks/useWeatherApi";
 import { useMultipleCitiesWeather } from "../hooks/useMultipleCitiesWeather";
+import { useWeatherApp } from "../hooks/useWeatherApp";
 
 const DEFAULT_CITY = "Helsinki";
 const OTHER_CITIES = ["New York", "Copenhagen", "Ho Chi Minh City"];
@@ -13,6 +14,8 @@ const OTHER_CITIES = ["New York", "Copenhagen", "Ho Chi Minh City"];
 // Recibe unit y setUnit por props (NO uses useState para unit aquí)
 export default function WheaterApp({ unit, setUnit }) {
   const [city, setCity] = useState(DEFAULT_CITY);
+  const { theme } = useWeatherApp();
+  const themeClass = theme === "dark" ? "theme-dark" : "theme-light";
 
   // Usar el hook con lenguaje español
   const {
@@ -94,7 +97,29 @@ export default function WheaterApp({ unit, setUnit }) {
     }));
 
   return (
-    <div className="weather-app-container">
+    <div className={`weather-app-container ${themeClass}`}>
+      <style>
+        {`
+        .weather-app-container {
+          border-radius: 22px;
+          padding: 20px 24px;
+          margin: 0 auto;
+          max-width: 1520px;
+          box-sizing: border-box;
+          box-shadow: 0 2px 12px #0003;
+        }
+        /* Tema oscuro */
+        .theme-dark.weather-app-container {
+          background: rgba(30,32,56,0.97);
+          color: #fff;
+        }
+        /* Tema claro */
+        .theme-light.weather-app-container {
+          background: #f5f5fa;
+          color: #22243d;
+        }
+        `}
+      </style>
       <Header setCity={setCity} unit={unit} setUnit={setUnit} />
       <main>
         <section>

@@ -1,32 +1,25 @@
+import { useWeatherApp } from "../hooks/useWeatherApp";
 import { celsiusToFahrenheit } from "../util/temperature";
 
 export default function CurrentWeather({ weather, unit }) {
-  // Si el unit es "C", muestra el valor en Celsius, si es "F", lo convierte.
+  const { theme } = useWeatherApp();
+
   const temp = unit === "C" ? Math.round(weather.temp) : celsiusToFahrenheit(weather.temp);
   const tempMin = unit === "C" ? Math.round(weather.temp_min) : celsiusToFahrenheit(weather.temp_min);
   const tempMax = unit === "C" ? Math.round(weather.temp_max) : celsiusToFahrenheit(weather.temp_max);
   const feelsLike = unit === "C" ? Math.round(weather.feels_like) : celsiusToFahrenheit(weather.feels_like);
 
-  // El símbolo de unidad para mostrar siempre °C o °F
   const unidadSimbolo = unit === "C" ? "°C" : "°F";
+  const themeClass = theme === "dark" ? "theme-dark" : "theme-light";
 
   return (
-    <div className="current-weather-box">
+    <div className={`current-weather-box ${themeClass}`}>
       <style>
         {`
-        body {
-          background: linear-gradient(135deg, #23254e 0%, #2d2347 100%);
-          color: #fff;
-          margin: 0;
-          min-height: 100vh;
-        }
-
         .current-weather-box {
-          background: rgba(30,32,56,0.97);
           border-radius: 18px;
           padding: 24px 32px;
           margin-bottom: 10px;
-          color: #fff;
           box-shadow: 0 2px 12px #0003;
         }
         .current-weather-main {
@@ -37,16 +30,13 @@ export default function CurrentWeather({ weather, unit }) {
         .current-temp {
           font-size: 3.8rem;
           font-weight: bold;
-          color: #f6d365;
         }
         .current-city {
           font-size: 1.3rem;
           font-weight: 500;
-          color: #e4e6fa;
         }
         .current-time {
           font-size: 1.08rem;
-          color: #b4b4e6;
           margin-bottom: 8px;
         }
         .current-details {
@@ -54,7 +44,40 @@ export default function CurrentWeather({ weather, unit }) {
           display: flex;
           gap: 24px;
           font-size: 1.08rem;
+        }
+        /* --- Tema oscuro --- */
+        .theme-dark.current-weather-box {
+          background: rgba(30,32,56,0.97);
+          color: #fff;
+        }
+        .theme-dark .current-temp {
+          color: #f6d365;
+        }
+        .theme-dark .current-city {
           color: #e4e6fa;
+        }
+        .theme-dark .current-time {
+          color: #b4b4e6;
+        }
+        .theme-dark .current-details {
+          color: #e4e6fa;
+        }
+        /* --- Tema claro --- */
+        .theme-light.current-weather-box {
+          background: #f5f5fa;
+          color: #22243d;
+        }
+        .theme-light .current-temp {
+          color: #ff884b;
+        }
+        .theme-light .current-city {
+          color: #22243d;
+        }
+        .theme-light .current-time {
+          color: #8551e6;
+        }
+        .theme-light .current-details {
+          color: #22243d;
         }
         `}
       </style>

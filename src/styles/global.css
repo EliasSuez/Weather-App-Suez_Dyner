@@ -1,25 +1,6 @@
-body, .light {
-  background: #f6f6f6;
-  color: #222;
-}
-.dark {
-  background: #222;
-  color: #f6f6f6;
-}
-.weather-app {
-  max-width: 850px;
-  margin: 0 auto;
-  padding: 1rem;
-  border-radius: 10px;
-  min-height: 100vh;
-}
-header, main, footer {
-  margin-bottom: 1rem;
-}
-input, button {
-  margin: 0 4px;
-  padding: 6px;
-}
-section {
-  margin-bottom: 1.5rem;
+body, html, #root {
+  margin: 0;
+  border: none;
+  padding: 0;
+  box-sizing: border-box;
 }
