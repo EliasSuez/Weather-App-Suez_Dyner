@@ -1,10 +1,15 @@
+import ThemeProvider from "./context/ThemeProvider";
 import { WeatherAppProvider } from "./context/WeatherAppProvider";
-import App from "./App"; // o tu componente principal
+import App from "./App";
 
-export default function AppRoot() {
+function AppRoot() {
   return (
-    <WeatherAppProvider>
-      <App />
-    </WeatherAppProvider>
+    <ThemeProvider>
+      <WeatherAppProvider>
+        <App />
+      </WeatherAppProvider>
+    </ThemeProvider>
   );
 }
+
+export default AppRoot;

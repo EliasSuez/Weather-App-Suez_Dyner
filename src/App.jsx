@@ -9,6 +9,7 @@ import './App.css';
 
 export default function App() {
   const { theme, toggleTheme, unit, setUnit } = useWeatherApp();
+  console.log("theme:", theme);
   if (!unit || !setUnit) return <div>Error: WeatherAppProvider missing or incomplete</div>;
 
   const appStyles = {
@@ -19,6 +20,27 @@ export default function App() {
     minHeight: "100vh",
     transition: "background 0.3s, color 0.3s",
     padding: "0 0 40px 0",
+  };
+
+  const navStyles = {
+    display: "flex",
+    alignItems: "center",
+    gap: "8px",
+    background: theme === "dark" ? "#191c36" : "#ededed",
+    color: theme === "dark" ? "#fff" : "#22243d",
+    padding: "12px 28px",
+    marginBottom: "12px",
+    borderRadius: "0 0 12px 12px",
+    boxShadow: theme === "dark" ? "0 2px 8px #0002" : "0 2px 8px #ccc3"
+  };
+
+  const linkStyle = {
+    color: theme === "dark" ? "#fff" : "#22243d",
+    textDecoration: "none",
+    fontWeight: "bold",
+    padding: "4px 12px",
+    borderRadius: "6px",
+    transition: "background .2s",
   };
 
   return (
@@ -45,14 +67,6 @@ export default function App() {
           background: #8551e6;
           color: #fff;
         }
-        nav {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          background: #ededed;
-          padding: 12px 28px;
-          margin-bottom: 12px;
-        }
         .unit-toggle {
           display: flex;
           gap: 4px;
@@ -60,12 +74,12 @@ export default function App() {
         `}
       </style>
       <BrowserRouter>
-        <nav>
-          <Link to="/" style={{ marginRight: "10px" }}>Inicio</Link>
-          <Link to="/current">Clima actual</Link>
-          <Link to="/hourly" style={{ marginLeft: "10px" }}>Por hora</Link>
-          <Link to="/daily" style={{ marginLeft: "10px" }}>Por día</Link>
-          <Link to="/cities" style={{ marginLeft: "10px" }}>Ciudades grandes</Link>
+        <nav style={navStyles}>
+          <Link to="/" style={{ ...linkStyle, marginRight: "10px" }}>Inicio</Link>
+          <Link to="/current" style={linkStyle}>Clima actual</Link>
+          <Link to="/hourly" style={{ ...linkStyle, marginLeft: "10px" }}>Por hora</Link>
+          <Link to="/daily" style={{ ...linkStyle, marginLeft: "10px" }}>Por día</Link>
+          <Link to="/cities" style={{ ...linkStyle, marginLeft: "10px" }}>Ciudades grandes</Link>
           <div style={{ flex: 1 }} />
           <button
             onClick={toggleTheme}
@@ -76,7 +90,8 @@ export default function App() {
               borderRadius: "8px",
               padding: "8px 18px",
               fontSize: "1rem",
-              cursor: "pointer"
+              cursor: "pointer",
+              marginRight: "12px"
             }}
           >
             {theme === "dark" ? "🌙 Tema Oscuro" : "☀️ Tema Claro"}

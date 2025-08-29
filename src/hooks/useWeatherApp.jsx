@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useContext } from "react";
+import { WeatherAppContext } from "../context/WeatherAppContext";
 
 export function useWeatherApp() {
-  const [unit, setUnit] = useState("C"); // "C" para Celsius, "F" para Fahrenheit
-
-  return { unit, setUnit };
+  return useContext(WeatherAppContext);
 }
