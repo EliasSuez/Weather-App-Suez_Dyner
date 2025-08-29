@@ -81,7 +81,7 @@ export default function App() {
           width: 100vw;
           height: 100vh;
           background: url('https://st2.depositphotos.com/2880321/11137/v/450/depositphotos_111378134-stock-illustration-vector-stars-in-night-sky.jpg') repeat;
-          opacity: 0.22;
+          opacity: 0.25;
           animation: move-stars 80s linear infinite;
           pointer-events: none;
         }
