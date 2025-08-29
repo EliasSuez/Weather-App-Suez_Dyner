@@ -9,17 +9,18 @@ import './App.css';
 
 export default function App() {
   const { theme, toggleTheme, unit, setUnit } = useWeatherApp();
-  console.log("theme:", theme);
   if (!unit || !setUnit) return <div>Error: WeatherAppProvider missing or incomplete</div>;
 
   const appStyles = {
     background: theme === "dark"
-      ? "linear-gradient(135deg, #23254e 0%, #2d2347 100%)"
+      ? "none"
       : "linear-gradient(135deg, #f5f5fa 0%, #e7e6ec 100%)",
     color: theme === "dark" ? "#fff" : "#22243d",
     minHeight: "100vh",
     transition: "background 0.3s, color 0.3s",
     padding: "0 0 40px 0",
+    position: "relative",
+    overflow: "hidden",
   };
 
   const navStyles = {
@@ -71,8 +72,26 @@ export default function App() {
           display: flex;
           gap: 4px;
         }
+
+        /* Fondo animado de estrellas para tema oscuro */
+        .star-background {
+          position: fixed;
+          inset: 0;
+          z-index: 0;
+          width: 100vw;
+          height: 100vh;
+          background: url('https://st2.depositphotos.com/2880321/11137/v/450/depositphotos_111378134-stock-illustration-vector-stars-in-night-sky.jpg') repeat;
+          opacity: 0.22;
+          animation: move-stars 80s linear infinite;
+          pointer-events: none;
+        }
+        @keyframes move-stars {
+          from { background-position: 0 0; }
+          to { background-position: 800px 400px; }
+        }
         `}
       </style>
+      {theme === "dark" && <div className="star-background"></div>}
       <BrowserRouter>
         <nav style={navStyles}>
           <Link to="/" style={{ ...linkStyle, marginRight: "10px" }}>Inicio</Link>

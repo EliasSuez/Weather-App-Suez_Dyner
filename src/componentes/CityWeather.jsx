@@ -5,7 +5,6 @@ export default function CityWeather({ cities, unit }) {
   const { theme } = useWeatherApp();
   const simbolo = unit === "C" ? "°C" : "°F";
 
-  // Determina la clase por tema
   const themeClass = theme === "dark" ? "theme-dark" : "theme-light";
 
   return (

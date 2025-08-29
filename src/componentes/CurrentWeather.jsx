@@ -21,6 +21,7 @@ export default function CurrentWeather({ weather, unit }) {
           padding: 24px 32px;
           margin-bottom: 10px;
           box-shadow: 0 2px 12px #0003;
+          max-width: 1520px;
         }
         .current-weather-main {
           display: flex;
